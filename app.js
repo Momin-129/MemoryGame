@@ -3,22 +3,36 @@ import { createRandom } from "./createRandom.js";
 // Timer
 //
 let startGame = false;
-var sec = 0;
+var count = 60;
 let first = 0;
 let pair = 0;
 let moves = 0;
 let original = "";
 let myTimer;
 
-function pad(val) {
-  return val > 9 ? val : "0" + val;
-}
+let match = new Audio("./sounds/match.ogg"),
+  win = new Audio("./sounds/win.ogg"),
+  wrong = new Audio("./sounds/wrong.ogg"),
+  lost = new Audio("./sounds/lost.ogg");
 
 $("#start").on("click", function () {
   startGame = true;
   myTimer = setInterval(function () {
-    $("#seconds").html(pad(++sec % 60));
-    $("#minutes").html(pad(parseInt(sec / 60)));
+    $("#seconds").html(count--);
+    if (count == 0) {
+      lost.play();
+      $("#seconds").html("00");
+      $("#info").append("<h4>YOU LOST</h4>");
+      clearInterval(myTimer);
+      setTimeout(function () {
+        pair = 0;
+        moves = 0;
+        $("#moves").html(moves);
+        startGame = false;
+        $("#info").html("");
+        createRandom();
+      }, 5000);
+    }
   }, 1000);
 });
 
@@ -39,9 +53,11 @@ $("#mainBox").on("click", ".blankCard", function () {
       first = value;
       original = $(pcard);
     } else if (first == value) {
+      match.play();
       pair++;
       first = 0;
     } else {
+      wrong.play();
       setTimeout(function () {
         $(original).css("display", "none");
         $(original).siblings().css("display", "block");
@@ -52,16 +68,18 @@ $("#mainBox").on("click", ".blankCard", function () {
     }
 
     if (pair == 8) {
+      win.play();
+      $("#info").append(`<h4>Score:</h4><span>${moves}</span>`);
       clearInterval(myTimer);
       startGame = false;
       setTimeout(function () {
-        $("#seconds").html("00");
-        $("#minutes").html("00");
         pair = 0;
         moves = 0;
         $("#moves").html(moves);
+        $("#info").html("");
+        $("#seconds").html("");
         createRandom();
-      }, 2000);
+      }, 5000);
     }
   }
 });
