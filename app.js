@@ -77,7 +77,7 @@ $("#mainBox").on("click", ".blankCard", function () {
         moves = 0;
         $("#moves").html(moves);
         $("#info").html("");
-        $("#seconds").html("");
+        $("#seconds").html("00");
         createRandom();
       }, 5000);
     }
