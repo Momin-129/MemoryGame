@@ -72,12 +72,15 @@ $("#mainBox").on("click", ".blankCard", function () {
       $("#info").append(`<h4>Score:</h4><span>${moves}</span>`);
       clearInterval(myTimer);
       startGame = false;
+      $("#winImg").css("display", "block");
       setTimeout(function () {
         pair = 0;
         moves = 0;
         $("#moves").html(moves);
         $("#info").html("");
+        count = 60;
         $("#seconds").html("00");
+        $("#winImg").css("display", "none");
         createRandom();
       }, 5000);
     }
